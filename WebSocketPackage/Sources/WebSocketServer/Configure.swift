@@ -16,33 +16,33 @@ func configure(_ app: Application) throws {
         }
 
         ws.onBinary { ws, data async in
-            guard let incomingMessage = try? decoder.decode(IncomingMessage.self, from: data) else {
+            guard let appMessage = try? decoder.decode(AppMessage.self, from: data) else {
                 try? await ws.close(code: .unacceptableData)
                 return
             }
 
-            let outgoingMessage: OutgoingMessage
+            let serverMessage: ServerMessage
 
-            switch incomingMessage {
+            switch appMessage {
             case let .add(item):
                 let newItem = Item(id: UUID(), text: item.text)
                 await ItemRepository.shared.add(newItem)
-                outgoingMessage = .add(item: newItem)
+                serverMessage = .add(item: newItem)
 
             case let .update(item):
                 guard let updatedItem = await ItemRepository.shared.set(item) else {
                     return
                 }
-                outgoingMessage = .update(item: updatedItem)
+                serverMessage = .update(item: updatedItem)
 
             case let .delete(id):
                 guard let deletedItem = await ItemRepository.shared.delete(withId: id) else {
                     return
                 }
-                outgoingMessage = .delete(item: deletedItem)
+                serverMessage = .delete(item: deletedItem)
             }
 
-            guard let data = try? encoder.encode(outgoingMessage) else {
+            guard let data = try? encoder.encode(serverMessage) else {
                 return
             }
 
@@ -51,7 +51,7 @@ func configure(_ app: Application) throws {
             }
         }
 
-        let outgoingMessage = OutgoingMessage.items(items: await ItemRepository.shared.get())
+        let outgoingMessage = ServerMessage.items(items: await ItemRepository.shared.get())
 
         guard let data = try? encoder.encode(outgoingMessage) else {
             return

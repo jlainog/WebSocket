@@ -11,13 +11,13 @@ public struct Item: Codable, Identifiable {
     }
 }
 
-public enum IncomingMessage: Codable {
+public enum AppMessage: Codable {
     case update(item: Item)
     case add(item: Item)
     case delete(id: UUID)
 }
 
-public enum OutgoingMessage: Codable {
+public enum ServerMessage: Codable {
     case items(items: IdentifiedArrayOf<Item>)
     case update(item: Item)
     case add(item: Item)

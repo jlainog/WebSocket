@@ -6,7 +6,7 @@ import SwiftUI
 
 public struct AppView: View {
     @State private var webSocketConnectionTask: Task<Void, Never>? = nil
-    @State private var connection: WebSocketConnection<OutgoingMessage, IncomingMessage>?
+    @State private var connection: WebSocketConnection<ServerMessage, AppMessage>?
 
     @State private var items: IdentifiedArrayOf<Item> = []
 
@@ -223,11 +223,11 @@ struct ItemView: View {
     AppView()
 }
 
-func createWebSocketConnection() -> WebSocketConnection<OutgoingMessage, IncomingMessage> {
+func createWebSocketConnection() -> WebSocketConnection<ServerMessage, AppMessage> {
     let url = URL(string: "ws://127.0.0.1:8080/channel")!
     let request = URLRequest(url: url)
     let webSocketTask = URLSession.shared.webSocketTask(with: request)
-    return WebSocketConnection<OutgoingMessage, IncomingMessage>(
+    return WebSocketConnection<ServerMessage, AppMessage>(
         webSocketTask: webSocketTask,
         decoder: decoder,
         encoder: encoder
