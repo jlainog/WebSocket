@@ -1,6 +1,5 @@
 import Foundation
 import IssueReporting
-import SharedModels
 
 public final class WebSocketConnection<
     Incoming: Decodable & Sendable,
