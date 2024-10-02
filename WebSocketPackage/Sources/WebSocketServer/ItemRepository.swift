@@ -21,7 +21,7 @@ actor ItemRepository {
 
     func set(_ item: Item) async -> Item? {
         items[id: item.id] = item
-        return item
+        return items[id: item.id]
     }
 
     func add(_ item: Item) async {
