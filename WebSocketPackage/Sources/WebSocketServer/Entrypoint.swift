@@ -19,9 +19,3 @@ enum Entrypoint {
         try await app.execute()
     }
 }
-
-//// configures your application
-//public func configure(_ app: Application) async throws {
-//    // register routes
-//    try routes(app)
-//}

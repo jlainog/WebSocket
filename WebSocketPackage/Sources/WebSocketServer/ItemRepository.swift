@@ -1,10 +1,11 @@
 import Foundation
+import IdentifiedCollections
 import SharedModels
 
 actor ItemRepository {
     static let shared = ItemRepository()
 
-    private var items: [Item] = [
+    private var items: IdentifiedArrayOf<Item> = [
         Item(id: .init(), text: "Item 1"),
         Item(id: .init(), text: "Item 2"),
         Item(id: .init(), text: "Item 3"),
@@ -12,20 +13,14 @@ actor ItemRepository {
         Item(id: .init(), text: "Item 5"),
     ]
 
-    func get() async -> [Item] { items }
+    func get() async -> IdentifiedArrayOf<Item> { items }
 
     func get(withId id: UUID) async -> Item? {
-        guard let index = items.firstIndex(where: { $0.id == id }) else {
-            return nil
-        }
-        return items[index]
+        items[id: id]
     }
 
     func set(_ item: Item) async -> Item? {
-        guard let index = items.firstIndex(where: { $0.id == item.id }) else {
-            return nil
-        }
-        items[index] = item
+        items[id: item.id] = item
         return item
     }
 
@@ -34,9 +29,6 @@ actor ItemRepository {
     }
 
     func delete(withId id: UUID) async -> Item? {
-        guard let index = items.firstIndex(where: { $0.id == id }) else {
-            return nil
-        }
-        return items.remove(at: index)
+        items.remove(id: id)
     }
 }

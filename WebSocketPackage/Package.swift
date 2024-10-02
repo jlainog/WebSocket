@@ -33,6 +33,7 @@ let package = Package(
             dependencies: [
 //                .product(name: "CasePaths", package: "swift-case-paths"),
 //                .product(name: "CustomDump", package: "swift-custom-dump"),
+                .product(name: "IdentifiedCollections", package: "swift-identified-collections"),
 //                .product(name: "Tagged", package: "swift-tagged"),
             ]
         ),
@@ -50,6 +51,7 @@ let package = Package(
             name: "WebSocketServer",
             dependencies: [
                 "SharedModels",
+                .product(name: "IdentifiedCollections", package: "swift-identified-collections"),
                 .product(name: "Vapor", package: "vapor"),
             ],
             swiftSettings: [.enableUpcomingFeature("StrictConcurrency")]

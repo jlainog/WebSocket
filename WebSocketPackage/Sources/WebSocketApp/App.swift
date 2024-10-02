@@ -1,4 +1,5 @@
 import Foundation
+import IdentifiedCollections
 import IssueReporting
 import SharedModels
 import SwiftUI
@@ -7,7 +8,7 @@ public struct AppView: View {
     @State private var webSocketConnectionTask: Task<Void, Never>? = nil
     @State private var connection: WebSocketConnection<OutgoingMessage, IncomingMessage>?
 
-    @State private var items: [Item] = []
+    @State private var items: IdentifiedArrayOf<Item> = []
 
     @State private var currentEditingItemId: UUID = UUID()
     @State private var currentEditingItemText: String = ""
@@ -129,18 +130,10 @@ public struct AppView: View {
                     items.append(item)
 
                 case let .update(item):
-                    guard let index = items.firstIndex(where: { $0.id == item.id }) else {
-                        return reportIssue("Expected updated Item to exist")
-                    }
-
-                    items[index] = item
+                    items[id: item.id] = item
 
                 case let .delete(item):
-                    guard let index = items.firstIndex(where: { $0.id == item.id }) else {
-                        return reportIssue("Expected deleted Item to exist")
-                    }
-
-                    let _ = items.remove(at: index)
+                    items.remove(id: item.id)
                 }
             }
 
