@@ -2,7 +2,7 @@
 import Vapor
 
 func configure(_ app: Application) throws {
-    app.webSocket("channel") { (req, ws) async in
+    app.webSocket("channel") { (req, ws) in
         do {
             let initialListOfItems = ServerMessage.items(
                 items: await ItemRepository.shared.get()
@@ -19,18 +19,14 @@ func configure(_ app: Application) throws {
             Task { await WebSocketRepository.shared.remove(ws) }
         }
 
-        ws.onText { ws, _ async in
-            try? await ws.close(code: .unacceptableData)
-        }
-
-        ws.onBinary { ws, data async in
+        ws.onBinary { ws, data in
             do {
                 guard let sendData = try await handleData(data) else {
                     return
                 }
 
                 for ws in await WebSocketRepository.shared.get() {
-                    try? await ws.send([UInt8](sendData))
+                    try await ws.send([UInt8](sendData))
                 }
             } catch {
                 try? await ws.close(code: .unacceptableData)
