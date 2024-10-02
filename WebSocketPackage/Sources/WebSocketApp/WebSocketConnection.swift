@@ -33,8 +33,7 @@ public final class WebSocketConnection<
         webSocketTask.cancel(with: .goingAway, reason: nil)
     }
 
-    //    throws(WebSocket.Error)
-    public func send(_ message: Outgoing) async throws {
+    public func send(_ message: Outgoing) async throws(WebSocketConnection.Error) {
         do {
             let messageData = try encoder.encode(message)
             try await webSocketTask.send(.data(messageData))
@@ -45,8 +44,7 @@ public final class WebSocketConnection<
         }
     }
 
-    //    throws(WebSocket.Error)
-    public func receiveSingle() async throws -> Incoming {
+    public func receiveSingle() async throws(WebSocketConnection.Error) -> Incoming {
         do {
             let message = try await webSocketTask.receive()
             switch message {
